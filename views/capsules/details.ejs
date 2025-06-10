@@ -1,0 +1,23 @@
+<%- include('../partials/authHeader') %>
+
+<div class="view-container">
+  <h2><%= capsule.title %></h2>
+  <p><strong>Created:</strong> <%= capsule.created_at.toISOString().split('T')[0] %></p>
+  <p><strong>Unlock Date:</strong> <%= capsule.unlock_date.toISOString().split('T')[0] %></p>
+
+  <% if (isUnlocked) { %>
+    <p><%= capsule.message %></p>
+
+    <% if (capsule.attachment) { %>
+      <p><strong>Attachment:</strong> <a href="/uploads/<%= capsule.attachment %>" target="_blank">View</a></p>
+    <% } %>
+  <% } else { %>
+    <div class="locked-info">
+      <p><em>This capsule is locked until <%= capsule.unlock_date.toISOString().split('T')[0] %>.</em></p>
+    </div>
+  <% } %>
+
+  <a href="/dashboard" class="btn-back">Back to Dashboard</a>
+</div>
+
+<%- include('../partials/authFooter') %>

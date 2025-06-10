@@ -1,0 +1,23 @@
+<%- include('../partials/authHeader') %>
+
+<div class="edit-container">
+  <h2>Edit Capsule</h2>
+<form action="/capsules/<%= capsule.id %>/edit" method="POST" enctype="multipart/form-data">
+  <label>Title:</label>
+  <input type="text" name="title" value="<%= capsule.title %>" required>
+
+  <label>Message:</label>
+  <textarea name="message" rows="5" required><%= capsule.message %></textarea>
+
+  <label>Unlock Date:</label>
+  <input type="date" name="unlock_date" value="<%= capsule.unlock_date.toISOString().split('T')[0] %>" required>
+
+  <label>Replace Attachment (optional):</label>
+  <input type="file" name="attachment">
+
+  <button type="submit">Update</button>
+</form>
+<a href="/dashboard" class="btn-back">Back to Dashboard</a>
+</div>
+
+<%- include('../partials/authFooter') %>

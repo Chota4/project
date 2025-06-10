@@ -1,0 +1,206 @@
+<div class="products-page">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+            <h1 class="h3 mb-0">Products</h1>
+            <div class="ms-4">
+                <div class="btn-group">
+                    <button class="btn btn-outline-secondary" data-view="grid">
+                        <i class='bx bxs-grid'></i>
+                    </button>
+                    <button class="btn btn-outline-secondary active" data-view="list">
+                        <i class='bx bx-list-ul'></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <a href="/products/new" class="btn btn-primary">
+            <i class='bx bx-plus'></i> Add Product
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form class="row g-3" id="filterForm">
+                <div class="col-md-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" name="category">
+                        <option value="">All Categories</option>
+                        <option value="Footwear">Footwear</option>
+                        <option value="Apparel">Apparel</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Equipment">Equipment</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Gender</label>
+                    <select class="form-select" name="gender">
+                        <option value="">All</option>
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                        <option value="Unisex">Unisex</option>
+                        <option value="Kids">Kids</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Price Range</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" name="minPrice" placeholder="Min">
+                        <span class="input-group-text">-</span>
+                        <input type="number" class="form-control" name="maxPrice" placeholder="Max">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Stock Status</label>
+                    <select class="form-select" name="stock">
+                        <option value="">All</option>
+                        <option value="in_stock">In Stock</option>
+                        <option value="low_stock">Low Stock</option>
+                        <option value="out_of_stock">Out of Stock</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Products List -->
+    <div class="products-list">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% products.forEach(product => { %>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <% if (product.images && product.images[0]) { %>
+                                        <img src="<%= product.images[0] %>" alt="<%= product.name %>" class="product-thumb">
+                                    <% } else { %>
+                                        <div class="product-thumb-placeholder">
+                                            <i class='bx bx-image'></i>
+                                        </div>
+                                    <% } %>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0"><%= product.name %></h6>
+                                        <small class="text-muted"><%= product.sub_category %></small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><%= product.sku %></td>
+                            <td><%= product.category %></td>
+                            <td>$<%= product.price.toFixed(2) %></td>
+                            <td>
+                                <% const totalStock = product.sizes.reduce((sum, size) => sum + size.quantity, 0) %>
+                                <%= totalStock %>
+                            </td>
+                            <td>
+                                <% if (!product.is_active) { %>
+                                    <span class="badge bg-secondary">Inactive</span>
+                                <% } else if (totalStock === 0) { %>
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                <% } else if (totalStock <= 10) { %>
+                                    <span class="badge bg-warning">Low Stock</span>
+                                <% } else { %>
+                                    <span class="badge bg-success">In Stock</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="/products/<%= product.id %>" class="btn btn-sm btn-outline-primary">
+                                        <i class='bx bx-show'></i>
+                                    </a>
+                                    <a href="/products/<%= product.id %>/edit" class="btn btn-sm btn-outline-secondary">
+                                        <i class='bx bx-edit'></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger" 
+                                            onclick="deleteProduct('<%= product.id %>')">
+                                        <i class='bx bx-trash'></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+                <a class="page-link" href="?page=<%= page - 1 %>">Previous</a>
+            </li>
+            <% for(let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= page === i ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                </li>
+            <% } %>
+            <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+                <a class="page-link" href="?page=<%= page + 1 %>">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<%- contentFor('script') %>
+<script>
+    // Delete product confirmation
+    function deleteProduct(id) {
+        if (confirm('Are you sure you want to delete this product?')) {
+            fetch(`/api/products/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error deleting product');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting product');
+            });
+        }
+    }
+
+    // Filter form handling
+    const filterForm = document.getElementById('filterForm');
+    filterForm.addEventListener('change', () => {
+        const formData = new FormData(filterForm);
+        const params = new URLSearchParams();
+        
+        for (const [key, value] of formData.entries()) {
+            if (value) {
+                params.append(key, value);
+            }
+        }
+
+        window.location.href = `?${params.toString()}`;
+    });
+
+    // View toggle
+    const viewButtons = document.querySelectorAll('[data-view]');
+    viewButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            viewButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            document.querySelector('.products-list').setAttribute('data-view', button.dataset.view);
+        });
+    });
+</script> 

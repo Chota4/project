@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="admin-container">
+    
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+      <button id="hamburger" class="hamburger">&#9776;</button>
+      <span class="mobile-title">Admin Panel</span>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">Admin Panel</div>
+      <nav class="nav-links">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/users">Users</a>
+        <a href="/admin/capsules">Capsules</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-dashboard">
+      <header class="dashboard-header">
+        <h1>Welcome, Dorji 👋</h1>
+        <p class="dashboard-subtitle">Here’s a quick overview of your system stats.</p>
+      </header>
+
+      <section class="dashboard-stats">
+        <div class="dashboard-card users-card">
+          <h2>Total Users</h2>
+          <p class="count"><%= totalUsers %></p>
+        </div>
+        <div class="dashboard-card capsules-card">
+          <h2>Total Capsules</h2>
+          <p class="count"><%= totalCapsules %></p>
+        </div>
+      </section>
+    </main>
+  </div>
+<script src="/js/script.js"></script>
+</body>
+</html>

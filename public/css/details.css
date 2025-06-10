@@ -1,0 +1,88 @@
+.view-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+}
+
+.view-container h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.view-container p {
+  margin: 0.6rem 0;
+  line-height: 1.5;
+}
+
+.view-container strong {
+  color: #555;
+}
+
+.locked-message-container {
+  max-width: 450px;
+  margin: 80px auto;
+  padding: 30px;
+  background-color: #fff3f3;
+  border: 1px solid #ff6b6b;
+  border-radius: 8px;
+  text-align: center;
+  color: #b00020;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.locked-message-container h2 {
+  margin-bottom: 15px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.locked-message-container p {
+  margin-bottom: 20px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.locked-message-container .btn-view,
+.locked-message-container .btn-back {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.locked-message-container .btn-view {
+  background-color: #1f2937;
+  color: white;
+}
+
+.locked-message-container .btn-view:hover {
+  background-color: #2f425c;
+}
+
+.locked-message-container .btn-back {
+  background-color: #1f2937;
+  color: white;
+}
+
+.locked-message-container .btn-back:hover {
+  background-color: #2f425c;
+}
+
+.locked-info {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 15px;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  margin-top: 15px;
+  font-style: italic;
+}
+

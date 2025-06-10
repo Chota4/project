@@ -1,0 +1,231 @@
+<div class="sale-detail">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Order #<%= sale.order_number %></h1>
+            <p class="text-muted mb-0">
+                <%= new Date(sale.created_at).toLocaleDateString() %> at 
+                <%= new Date(sale.created_at).toLocaleTimeString() %>
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary" onclick="printOrder()">
+                <i class='bx bx-printer'></i> Print Order
+            </button>
+            <a href="/sales" class="btn btn-outline-secondary">
+                <i class='bx bx-arrow-back'></i> Back to Sales
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-md-8">
+            <!-- Order Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Order Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="order-timeline">
+                        <div class="timeline-item <%= 
+                            sale.order_status === 'Processing' ? 'active' :
+                            sale.order_status === 'Shipped' || sale.order_status === 'Delivered' ? 'completed' :
+                            sale.order_status === 'Cancelled' ? 'cancelled' : ''
+                        %>">
+                            <div class="timeline-icon">
+                                <i class='bx bx-check'></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6>Order Received</h6>
+                                <small><%= new Date(sale.created_at).toLocaleString() %></small>
+                            </div>
+                        </div>
+                        <div class="timeline-item <%= 
+                            sale.order_status === 'Shipped' ? 'active' :
+                            sale.order_status === 'Delivered' ? 'completed' :
+                            sale.order_status === 'Cancelled' ? 'cancelled' : ''
+                        %>">
+                            <div class="timeline-icon">
+                                <i class='bx bx-package'></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6>Order Shipped</h6>
+                                <% if (sale.shipped_at) { %>
+                                    <small><%= new Date(sale.shipped_at).toLocaleString() %></small>
+                                <% } %>
+                                <% if (sale.tracking_number) { %>
+                                    <div class="mt-1">
+                                        Tracking #: <%= sale.tracking_number %>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="timeline-item <%= 
+                            sale.order_status === 'Delivered' ? 'active' :
+                            sale.order_status === 'Cancelled' ? 'cancelled' : ''
+                        %>">
+                            <div class="timeline-icon">
+                                <i class='bx bx-check-circle'></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6>Order Delivered</h6>
+                                <% if (sale.delivered_at) { %>
+                                    <small><%= new Date(sale.delivered_at).toLocaleString() %></small>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Order Items</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Size</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% sale.items.forEach(item => { %>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <% if (item.product.images && item.product.images[0]) { %>
+                                                    <img src="<%= item.product.images[0] %>" 
+                                                         alt="<%= item.product.name %>" 
+                                                         class="product-thumb">
+                                                <% } %>
+                                                <div class="ms-3">
+                                                    <h6 class="mb-0"><%= item.product.name %></h6>
+                                                    <small class="text-muted">SKU: <%= item.product.sku %></small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><%= item.size %></td>
+                                        <td><%= item.quantity %></td>
+                                        <td>$<%= item.price.toFixed(2) %></td>
+                                        <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end">Subtotal:</td>
+                                    <td>$<%= sale.subtotal.toFixed(2) %></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end">Shipping:</td>
+                                    <td>$<%= sale.shipping_cost.toFixed(2) %></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end">Tax:</td>
+                                    <td>$<%= sale.tax.toFixed(2) %></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                    <td><strong>$<%= sale.total_amount.toFixed(2) %></strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Customer Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Customer Information</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-1"><%= sale.customer_name %></h6>
+                    <p class="mb-2">
+                        <a href="mailto:<%= sale.customer_email %>"><%= sale.customer_email %></a>
+                    </p>
+                    <% if (sale.customer_phone) { %>
+                        <p class="mb-0">
+                            <a href="tel:<%= sale.customer_phone %>"><%= sale.customer_phone %></a>
+                        </p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><%= sale.shipping_street %></p>
+                    <p class="mb-1"><%= sale.shipping_city %>, <%= sale.shipping_state %></p>
+                    <p class="mb-1"><%= sale.shipping_zip_code %></p>
+                    <p class="mb-0"><%= sale.shipping_country %></p>
+                    <hr>
+                    <p class="mb-0">
+                        <strong>Method:</strong> <%= sale.shipping_method %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Payment Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Method:</span>
+                        <span><%= sale.payment_method %></span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Status:</span>
+                        <span class="badge bg-<%= 
+                            sale.payment_status === 'Completed' ? 'success' :
+                            sale.payment_status === 'Pending' ? 'warning' :
+                            sale.payment_status === 'Failed' ? 'danger' : 'secondary'
+                        %>">
+                            <%= sale.payment_status %>
+                        </span>
+                    </div>
+                    <% if (sale.payment_id) { %>
+                        <div class="d-flex justify-content-between">
+                            <span>Transaction ID:</span>
+                            <span><%= sale.payment_id %></span>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <% if (sale.notes) { %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Notes</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0"><%= sale.notes %></p>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('script') %>
+<script>
+    function printOrder() {
+        window.print();
+    }
+</script> 

@@ -1,0 +1,289 @@
+<div class="product-form">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0"><%= product ? 'Edit Product' : 'Add New Product' %></h1>
+        <a href="/products" class="btn btn-outline-secondary">
+            <i class='bx bx-arrow-back'></i> Back to Products
+        </a>
+    </div>
+
+    <form action="<%= product ? `/products/${product.id}` : '/products' %>" 
+          method="POST" 
+          enctype="multipart/form-data"
+          id="productForm">
+        <div class="row">
+            <!-- Basic Information -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Basic Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="name" 
+                                   value="<%= product ? product.name : '' %>"
+                                   required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">SKU</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="sku" 
+                                       value="<%= product ? product.sku : '' %>"
+                                       required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" 
+                                           class="form-control" 
+                                           name="price" 
+                                           step="0.01"
+                                           value="<%= product ? product.price : '' %>"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Footwear" <%= product && product.category === 'Footwear' ? 'selected' : '' %>>
+                                        Footwear
+                                    </option>
+                                    <option value="Apparel" <%= product && product.category === 'Apparel' ? 'selected' : '' %>>
+                                        Apparel
+                                    </option>
+                                    <option value="Accessories" <%= product && product.category === 'Accessories' ? 'selected' : '' %>>
+                                        Accessories
+                                    </option>
+                                    <option value="Equipment" <%= product && product.category === 'Equipment' ? 'selected' : '' %>>
+                                        Equipment
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Sub Category</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="sub_category" 
+                                       value="<%= product ? product.sub_category : '' %>"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" name="gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="Men" <%= product && product.gender === 'Men' ? 'selected' : '' %>>
+                                        Men
+                                    </option>
+                                    <option value="Women" <%= product && product.gender === 'Women' ? 'selected' : '' %>>
+                                        Women
+                                    </option>
+                                    <option value="Unisex" <%= product && product.gender === 'Unisex' ? 'selected' : '' %>>
+                                        Unisex
+                                    </option>
+                                    <option value="Kids" <%= product && product.gender === 'Kids' ? 'selected' : '' %>>
+                                        Kids
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Sport</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="sport" 
+                                       value="<%= product ? product.sport : '' %>">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" 
+                                      name="description" 
+                                      rows="4" 
+                                      required><%= product ? product.description : '' %></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Status -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   name="is_active" 
+                                   id="isActive"
+                                   <%= !product || product.is_active ? 'checked' : '' %>>
+                            <label class="form-check-label" for="isActive">Active</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Images -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Product Images</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="image-upload-container mb-3">
+                            <div class="current-images">
+                                <% if (product && product.images && product.images.length > 0) { %>
+                                    <% product.images.forEach((image, index) => { %>
+                                        <div class="image-preview">
+                                            <img src="<%= image %>" alt="Product Image">
+                                            <button type="button" class="btn-remove" onclick="removeImage(this, <%= index %>)">
+                                                <i class='bx bx-x'></i>
+                                            </button>
+                                            <input type="hidden" name="existing_images[]" value="<%= image %>">
+                                        </div>
+                                    <% }) %>
+                                <% } %>
+                            </div>
+                            <div class="dropzone" id="imageDropzone">
+                                <i class='bx bx-upload'></i>
+                                <p>Drag & drop images here or click to browse</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sizes -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Sizes & Stock</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="sizeContainer">
+                            <% if (product && product.sizes && product.sizes.length > 0) { %>
+                                <% product.sizes.forEach((size, index) => { %>
+                                    <div class="size-row mb-2">
+                                        <div class="input-group">
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   name="sizes[<%= index %>][size]" 
+                                                   value="<%= size.size %>"
+                                                   placeholder="Size">
+                                            <input type="number" 
+                                                   class="form-control" 
+                                                   name="sizes[<%= index %>][quantity]" 
+                                                   value="<%= size.quantity %>"
+                                                   placeholder="Quantity">
+                                            <button type="button" 
+                                                    class="btn btn-outline-danger" 
+                                                    onclick="removeSize(this)">
+                                                <i class='bx bx-trash'></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } %>
+                        </div>
+                        <button type="button" class="btn btn-outline-primary w-100" onclick="addSize()">
+                            <i class='bx bx-plus'></i> Add Size
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class='bx bx-save'></i> 
+                <%= product ? 'Update Product' : 'Create Product' %>
+            </button>
+            <button type="reset" class="btn btn-outline-secondary">Reset</button>
+        </div>
+    </form>
+</div>
+
+<%- contentFor('script') %>
+<script>
+    // Size management
+    function addSize() {
+        const container = document.getElementById('sizeContainer');
+        const index = container.children.length;
+        const template = `
+            <div class="size-row mb-2">
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control" 
+                           name="sizes[${index}][size]" 
+                           placeholder="Size">
+                    <input type="number" 
+                           class="form-control" 
+                           name="sizes[${index}][quantity]" 
+                           placeholder="Quantity">
+                    <button type="button" 
+                            class="btn btn-outline-danger" 
+                            onclick="removeSize(this)">
+                        <i class='bx bx-trash'></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', template);
+    }
+
+    function removeSize(button) {
+        button.closest('.size-row').remove();
+    }
+
+    // Image management
+    function removeImage(button, index) {
+        button.closest('.image-preview').remove();
+    }
+
+    // Initialize dropzone
+    const dropzone = new Dropzone("#imageDropzone", {
+        url: "/api/upload",
+        acceptedFiles: "image/*",
+        addRemoveLinks: true,
+        maxFiles: 5,
+        init: function() {
+            this.on("success", function(file, response) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'new_images[]';
+                input.value = response.url;
+                document.getElementById('productForm').appendChild(input);
+            });
+        }
+    });
+
+    // Form submission
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: this.method,
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/products';
+            } else {
+                alert('Error saving product');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error saving product');
+        });
+    });
+</script> 

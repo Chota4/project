@@ -1,0 +1,353 @@
+<div class="sales-form">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">New Sale</h1>
+        <a href="/sales" class="btn btn-outline-secondary">
+            <i class='bx bx-arrow-back'></i> Back to Sales
+        </a>
+    </div>
+
+    <form id="saleForm" action="/sales" method="POST">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-md-8">
+                <!-- Products -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Products</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="productContainer">
+                            <!-- Product rows will be added here -->
+                        </div>
+                        <button type="button" class="btn btn-outline-primary w-100" onclick="addProduct()">
+                            <i class='bx bx-plus'></i> Add Product
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Customer Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Customer Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" name="customer_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="customer_email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" name="customer_phone">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Shipping Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Street Address</label>
+                            <input type="text" class="form-control" name="shipping_street" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" name="shipping_city" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">State/Province</label>
+                                <input type="text" class="form-control" name="shipping_state" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Country</label>
+                                <input type="text" class="form-control" name="shipping_country" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">ZIP/Postal Code</label>
+                                <input type="text" class="form-control" name="shipping_zip_code" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Order Summary -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Payment Method</label>
+                            <select class="form-select" name="payment_method" required>
+                                <option value="">Select Payment Method</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="PayPal">PayPal</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Shipping Method</label>
+                            <select class="form-select" name="shipping_method" required>
+                                <option value="">Select Shipping Method</option>
+                                <option value="Standard">Standard Shipping</option>
+                                <option value="Express">Express Shipping</option>
+                                <option value="Next Day">Next Day Delivery</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="3"></textarea>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span id="shipping">$0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax:</span>
+                            <span id="tax">$0.00</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-2">
+                            <strong>Total:</strong>
+                            <strong id="total">$0.00</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class='bx bx-check'></i> Create Sale
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Product Template -->
+<template id="productRowTemplate">
+    <div class="product-row mb-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Product</label>
+                        <select class="form-select product-select" name="items[INDEX][product_id]" required>
+                            <option value="">Select Product</option>
+                            <% products.forEach(product => { %>
+                                <option value="<%= product.id %>" 
+                                        data-price="<%= product.price %>"
+                                        data-sizes="<%= JSON.stringify(product.sizes) %>">
+                                    <%= product.name %> (SKU: <%= product.sku %>)
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Size</label>
+                        <select class="form-select size-select" name="items[INDEX][size]" required disabled>
+                            <option value="">Select Size</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Quantity</label>
+                        <div class="input-group">
+                            <input type="number" 
+                                   class="form-control quantity-input" 
+                                   name="items[INDEX][quantity]" 
+                                   min="1" 
+                                   value="1"
+                                   required>
+                            <button type="button" 
+                                    class="btn btn-outline-danger" 
+                                    onclick="removeProduct(this)">
+                                <i class='bx bx-trash'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="stock-info text-muted"></div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="item-total">Total: $0.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<%- contentFor('script') %>
+<script>
+    let productIndex = 0;
+
+    // Add product row
+    function addProduct() {
+        const container = document.getElementById('productContainer');
+        const template = document.getElementById('productRowTemplate');
+        const clone = template.content.cloneNode(true);
+
+        // Update indices
+        const elements = clone.querySelectorAll('[name*="INDEX"]');
+        elements.forEach(element => {
+            element.name = element.name.replace('INDEX', productIndex);
+        });
+
+        // Initialize product select
+        const productSelect = clone.querySelector('.product-select');
+        new Choices(productSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search for a product...',
+            itemSelectText: ''
+        });
+
+        container.appendChild(clone);
+        productIndex++;
+        updateTotals();
+    }
+
+    // Remove product row
+    function removeProduct(button) {
+        button.closest('.product-row').remove();
+        updateTotals();
+    }
+
+    // Handle product selection
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('product-select')) {
+            const row = e.target.closest('.product-row');
+            const sizeSelect = row.querySelector('.size-select');
+            const option = e.target.selectedOptions[0];
+
+            if (option.value) {
+                const sizes = JSON.parse(option.dataset.sizes);
+                sizeSelect.innerHTML = '<option value="">Select Size</option>' +
+                    sizes.map(size => 
+                        `<option value="${size.size}" data-stock="${size.quantity}">
+                            ${size.size} (${size.quantity} in stock)
+                        </option>`
+                    ).join('');
+                sizeSelect.disabled = false;
+            } else {
+                sizeSelect.innerHTML = '<option value="">Select Size</option>';
+                sizeSelect.disabled = true;
+            }
+
+            updateRowTotal(row);
+        }
+    });
+
+    // Handle quantity changes
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('quantity-input')) {
+            const row = e.target.closest('.product-row');
+            updateRowTotal(row);
+        }
+    });
+
+    // Update row total
+    function updateRowTotal(row) {
+        const productSelect = row.querySelector('.product-select');
+        const quantityInput = row.querySelector('.quantity-input');
+        const totalElement = row.querySelector('.item-total');
+        const stockInfo = row.querySelector('.stock-info');
+
+        if (productSelect.value) {
+            const price = parseFloat(productSelect.selectedOptions[0].dataset.price);
+            const quantity = parseInt(quantityInput.value);
+            const total = price * quantity;
+
+            // Update stock info
+            const sizeSelect = row.querySelector('.size-select');
+            if (sizeSelect.value) {
+                const stock = parseInt(sizeSelect.selectedOptions[0].dataset.stock);
+                if (quantity > stock) {
+                    stockInfo.innerHTML = `<span class="text-danger">Warning: Quantity exceeds available stock (${stock})</span>`;
+                } else {
+                    stockInfo.innerHTML = `${stock - quantity} units will remain in stock`;
+                }
+            }
+
+            totalElement.textContent = `Total: $${total.toFixed(2)}`;
+        } else {
+            totalElement.textContent = 'Total: $0.00';
+            stockInfo.innerHTML = '';
+        }
+
+        updateTotals();
+    }
+
+    // Update order totals
+    function updateTotals() {
+        let subtotal = 0;
+        document.querySelectorAll('.product-row').forEach(row => {
+            const productSelect = row.querySelector('.product-select');
+            const quantityInput = row.querySelector('.quantity-input');
+
+            if (productSelect.value) {
+                const price = parseFloat(productSelect.selectedOptions[0].dataset.price);
+                const quantity = parseInt(quantityInput.value);
+                subtotal += price * quantity;
+            }
+        });
+
+        const shipping = 10; // Fixed shipping for demo
+        const tax = subtotal * 0.1; // 10% tax for demo
+        const total = subtotal + shipping + tax;
+
+        document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('shipping').textContent = `$${shipping.toFixed(2)}`;
+        document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Form submission
+    document.getElementById('saleForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: this.method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(formData))
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = `/sales/${data.data.id}`;
+            } else {
+                alert('Error creating sale');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error creating sale');
+        });
+    });
+
+    // Add initial product row
+    addProduct();
+</script> 

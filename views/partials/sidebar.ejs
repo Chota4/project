@@ -1,0 +1,47 @@
+<div class="sidebar">
+    <div class="logo">
+        <img src="/images/adidas-logo.png" alt="Adidas Logo">
+        <span>Management System</span>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="<%= path === '/' ? 'active' : '' %>">
+                <a href="/">
+                    <i class='bx bxs-dashboard'></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="<%= path.startsWith('/products') ? 'active' : '' %>">
+                <a href="/products">
+                    <i class='bx bxs-shopping-bag'></i>
+                    <span>Products</span>
+                </a>
+            </li>
+            <li class="<%= path.startsWith('/inventory') ? 'active' : '' %>">
+                <a href="/inventory">
+                    <i class='bx bxs-box'></i>
+                    <span>Inventory</span>
+                </a>
+            </li>
+            <li class="<%= path.startsWith('/sales') ? 'active' : '' %>">
+                <a href="/sales">
+                    <i class='bx bxs-cart'></i>
+                    <span>Sales</span>
+                </a>
+            </li>
+            <li class="<%= path.startsWith('/reports') ? 'active' : '' %>">
+                <a href="/reports">
+                    <i class='bx bxs-report'></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="<%= path.startsWith('/settings') ? 'active' : '' %>">
+                <a href="/settings">
+                    <i class='bx bxs-cog'></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div> 

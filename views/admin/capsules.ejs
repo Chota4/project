@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Users</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+  <div class="admin-container">
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+      <button id="hamburger" class="hamburger">&#9776;</button>
+      <span class="mobile-title">Admin Panel</span>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">Admin Panel</div>
+      <nav class="nav-links">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/users">Users</a>
+        <a href="/admin/capsules" class="active">Capsules</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="capsules-content">
+      <h2>All Capsules</h2>
+      <div class="capsules-table-wrapper">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>User</th>
+              <th>Email</th>
+              <th>Created</th>
+              <th>Unlock Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let i = 0; i < capsules.length; i++) {
+                const c = capsules[i];
+                const unlockDate = new Date(c.unlock_date);
+                const isUnlocked = unlockDate <= new Date();
+            %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td><%= c.title %></td>
+                <td><%= c.name %></td>
+                <td><%= c.email %></td>
+                <td><%= new Date(c.created_at).toLocaleDateString() %></td>
+                <td><%= unlockDate.toLocaleDateString() %></td>
+                <td>
+                  <span class="<%= isUnlocked ? 'unlocked' : 'locked' %>">
+                    <%= isUnlocked ? 'Unlocked' : 'Locked' %>
+                  </span>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<script src="/js/script.js"></script>
+</body>
+</html>

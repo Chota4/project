@@ -1,0 +1,209 @@
+<div class="inventory-form">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0"><%= inventory ? 'Edit Inventory' : 'Add New Inventory' %></h1>
+        <a href="/inventory" class="btn btn-outline-secondary">
+            <i class='bx bx-arrow-back'></i> Back to Inventory
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <form id="inventoryForm" 
+                  action="<%= inventory ? `/inventory/${inventory.id}` : '/inventory' %>" 
+                  method="POST">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Inventory Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Product Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">Product</label>
+                            <select class="form-select" name="product_id" required>
+                                <option value="">Select Product</option>
+                                <% products.forEach(product => { %>
+                                    <option value="<%= product.id %>" 
+                                            <%= inventory && inventory.product_id === product.id ? 'selected' : '' %>>
+                                        <%= product.name %> (SKU: <%= product.sku %>)
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <!-- Location Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Warehouse</label>
+                                <select class="form-select" name="warehouse" required>
+                                    <option value="">Select Warehouse</option>
+                                    <% warehouses.forEach(warehouse => { %>
+                                        <option value="<%= warehouse %>"
+                                                <%= inventory && inventory.warehouse === warehouse ? 'selected' : '' %>>
+                                            <%= warehouse %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Location</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       name="location" 
+                                       placeholder="e.g., Aisle A, Shelf 1"
+                                       value="<%= inventory ? inventory.location : '' %>"
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- Stock Information -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Current Quantity</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       name="quantity" 
+                                       min="0"
+                                       value="<%= inventory ? inventory.quantity : 0 %>"
+                                       required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Minimum Stock Level</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       name="minimum_stock" 
+                                       min="0"
+                                       value="<%= inventory ? inventory.minimum_stock : 10 %>"
+                                       required>
+                                <small class="text-muted">
+                                    Alert will be triggered when stock falls below this level
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="mb-4">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" 
+                                      name="notes" 
+                                      rows="3"
+                                      placeholder="Any additional information about this inventory"><%= inventory ? inventory.notes : '' %></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class='bx bx-save'></i> 
+                        <%= inventory ? 'Update Inventory' : 'Create Inventory' %>
+                    </button>
+                    <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Current Stock Status -->
+            <% if (inventory) { %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Stock Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Current Status</label>
+                            <div>
+                                <span class="badge bg-<%= 
+                                    inventory.status === 'In Stock' ? 'success' :
+                                    inventory.status === 'Low Stock' ? 'warning' : 'danger'
+                                %>">
+                                    <%= inventory.status %>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Last Restocked</label>
+                            <div>
+                                <%= inventory.last_restocked ? 
+                                    new Date(inventory.last_restocked).toLocaleDateString() : 
+                                    'Never' 
+                                %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Stock History</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <% stockHistory.forEach(history => { %>
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-0">
+                                                <%= history.type === 'restock' ? 'Restocked' : 'Adjusted' %>
+                                            </h6>
+                                            <small class="text-muted">
+                                                <%= new Date(history.date).toLocaleDateString() %>
+                                            </small>
+                                        </div>
+                                        <div class="text-<%= history.quantity > 0 ? 'success' : 'danger' %>">
+                                            <%= history.quantity > 0 ? '+' : '' %><%= history.quantity %>
+                                        </div>
+                                    </div>
+                                    <% if (history.notes) { %>
+                                        <small class="d-block mt-1"><%= history.notes %></small>
+                                    <% } %>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('script') %>
+<script>
+    // Form submission
+    document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: this.method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(formData))
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/inventory';
+            } else {
+                alert('Error saving inventory');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error saving inventory');
+        });
+    });
+
+    // Product selection enhancement
+    const productSelect = document.querySelector('select[name="product_id"]');
+    if (productSelect) {
+        new Choices(productSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search for a product...',
+            itemSelectText: ''
+        });
+    }
+</script> 

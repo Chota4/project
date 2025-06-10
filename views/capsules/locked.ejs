@@ -1,0 +1,11 @@
+<%- include('../partials/authHeader') %>
+
+<div class="locked-message-container">
+  <h2>Editing Locked</h2>
+  <p>Sorry, this capsule cannot be edited because the unlock date have not passed.</p>
+  <p>You can still view the capsule details.</p>
+  <a href="/capsules/<%= capsuleId %>" class="btn-view">View Capsule</a>
+  <a href="/dashboard" class="btn-back">Back to Dashboard</a>
+</div>
+
+<%- include('../partials/authFooter') %>

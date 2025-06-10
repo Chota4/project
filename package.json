@@ -1,0 +1,40 @@
+{
+  "name": "adidas-management-system",
+  "version": "1.0.0",
+  "description": "A comprehensive management system for Adidas products, inventory, and sales",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:init": "node db/init.js"
+  },
+  "keywords": [
+    "adidas",
+    "inventory",
+    "management",
+    "sales",
+    "products"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cikells/digital-time-capsule/issues"
+  },
+  "homepage": "https://github.com/Cikells/digital-time-capsule#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.29.4",
+    "multer": "^1.4.5-lts.2",
+    "pg-promise": "^11.5.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

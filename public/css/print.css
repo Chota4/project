@@ -1,0 +1,50 @@
+/* Print Styles */
+@media print {
+    .btn, 
+    .sidebar,
+    .main-header {
+        display: none !important;
+    }
+
+    .content {
+        margin-left: 0 !important;
+    }
+
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+
+    .card-header {
+        background-color: transparent !important;
+    }
+
+    .table {
+        width: 100% !important;
+    }
+
+    .table td,
+    .table th {
+        padding: 0.5rem !important;
+    }
+
+    /* Ensure proper page breaks */
+    h1, h2, h3, h4, h5, h6 {
+        break-after: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    /* Hide unnecessary elements for printing */
+    .no-print {
+        display: none !important;
+    }
+
+    /* Ensure white background */
+    body {
+        background-color: #fff !important;
+    }
+} 

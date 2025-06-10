@@ -1,0 +1,184 @@
+<div class="dashboard">
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-primary">
+                        <i class='bx bx-shopping-bag'></i>
+                    </div>
+                    <h3 class="stat-value"><%= stats.totalProducts %></h3>
+                    <p class="stat-label">Total Products</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-success">
+                        <i class='bx bx-dollar-circle'></i>
+                    </div>
+                    <h3 class="stat-value">$<%= stats.dailySales.total_revenue.toFixed(2) %></h3>
+                    <p class="stat-label">Today's Revenue</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-warning">
+                        <i class='bx bx-box'></i>
+                    </div>
+                    <h3 class="stat-value"><%= stats.lowStock %></h3>
+                    <p class="stat-label">Low Stock Items</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-info">
+                        <i class='bx bx-cart'></i>
+                    </div>
+                    <h3 class="stat-value"><%= stats.dailySales.total_sales %></h3>
+                    <p class="stat-label">Today's Orders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Sales Overview</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Product Categories</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Recent Sales</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% recentSales.forEach(sale => { %>
+                                    <tr>
+                                        <td><%= sale.order_number %></td>
+                                        <td><%= sale.customer_name %></td>
+                                        <td>$<%= sale.total_amount.toFixed(2) %></td>
+                                        <td>
+                                            <span class="badge bg-<%= sale.order_status === 'Delivered' ? 'success' : 
+                                                                      sale.order_status === 'Processing' ? 'primary' :
+                                                                      sale.order_status === 'Shipped' ? 'info' : 'danger' %>">
+                                                <%= sale.order_status %>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Top Products</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Sales</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% topProducts.forEach(product => { %>
+                                    <tr>
+                                        <td><%= product.name %></td>
+                                        <td><%= product.category %></td>
+                                        <td><%= product.total_quantity %></td>
+                                        <td>$<%= product.total_revenue.toFixed(2) %></td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('script') %>
+<script>
+    // Sales Chart
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    new Chart(salesCtx, {
+        type: 'line',
+        data: {
+            labels: <%- JSON.stringify(salesChart.labels) %>,
+            datasets: [{
+                label: 'Sales',
+                data: <%- JSON.stringify(salesChart.data) %>,
+                borderColor: '#0d6efd',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Category Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: <%- JSON.stringify(categoryChart.labels) %>,
+            datasets: [{
+                data: <%- JSON.stringify(categoryChart.data) %>,
+                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script> 

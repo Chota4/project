@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="error-page">
+    <div class="error-container">
+        <div class="error-content">
+            <i class='bx bx-error-circle'></i>
+            <h1>500</h1>
+            <h2>Internal Server Error</h2>
+            <p><%= error %></p>
+            <a href="/" class="btn-primary">Go to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+    .error-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .error-code {
+        font-size: 8rem;
+        font-weight: 700;
+        color: var(--danger-color);
+        line-height: 1;
+        margin-bottom: 1rem;
+        opacity: 0.1;
+    }
+
+    .error-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .error-message {
+        color: #6c757d;
+        margin-bottom: 2rem;
+        max-width: 500px;
+    }
+
+    .error-details {
+        text-align: left;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .error-details pre {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+</style> 
